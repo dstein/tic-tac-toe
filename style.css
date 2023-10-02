@@ -1,0 +1,59 @@
+h1 {
+    color: red;
+}
+
+#gameboard {
+    max-width: 800px;
+    width: 100%;
+    height: 800px;
+    margin: 0 auto;
+}
+
+#gameboard .wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    height: inherit;
+}
+
+#gameboard .wrapper .quadrant {
+    flex-grow: 1;
+    flex-basis: calc( 33.333% - 2px );
+}
+
+.quadrant {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    border: 1px solid black;
+}
+
+.quadrant[data-x="1"][data-y="1"] {
+    /* border-left: none;
+    border-top: none */
+}
+
+.quadrant[data-marker="x"]::before {
+    content: 'x';
+}
+
+.quadrant[data-marker="o"]::before {
+    content: 'o';
+}
+
+button.disable {
+    /* display: none; */
+    opacity: 0.35;
+}
+
+button.disable:hover {
+    cursor: not-allowed;
+}
+
+#restart {
+    display: none;
+}
+
+#restart.show {
+    display: inline-block;
+}
