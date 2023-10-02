@@ -47,7 +47,7 @@ const Gameboard = ( function() {
 
     const domBoard          = document.getElementById('gameboard');
     const boardQuadrants    = document.querySelectorAll('.quadrant');
-    const gameBoard         = ['', '', '', '', '', '', '', '', '' ];
+    const gameBoard         = [null, null, null, null, null, null, null, null, null];
     
     //Visualized
     // const gameBoard =   [
@@ -179,26 +179,37 @@ const Controller = ( function(board) {
         let winningMarker;
         let winningPlayer;
 
-        gameOverX = quadrants.every( (val) => {
-            return val === 'x';
-        });
-
-        gameOverO = quadrants.every( (val) => {
-            return val === 'o';
-        });
-
-        // gameOverTie = quadrants.every( (val) => {
-        //     //console.log('tie game!');
-        //     return val === 'o' || val === 'x';
+        // gameOverX = quadrants.every( (val) => {
+        //     return val === 'x';
         // });
+
+        // gameOverO = quadrants.every( (val) => {
+        //     return val === 'o';
+        // });
+
+        gameOverTie = quadrants.every( (e) => {
+            return e === 'x' || e === 'o';
+            console.log(e);
+        });
+
+        // function checkQuad(q) {
+        //     console.log(q);
+        //     return q === 'x' && q === 'o';
+        // }
+
+        // for ( let q in quadrants ) {
+        //     console.log(quadrants[q]);
+        // }
+
+        console.log(`Is tie?: ${gameOverTie}`);
 
         if ( gameOverX ) {
             winningMarker = 'x';
         } else if ( gameOverO ) {
             winningMarker = 'o';
         } else if ( gameOverTie ) {
-            winningMarker = 'Tie!';
-            winningPlayer = winningMarker;
+            //winningMarker = 'Tie!';
+            //winningPlayer = winningMarker;
         }
 
         if ( player1.marker === winningMarker ) {
