@@ -211,7 +211,7 @@ const Controller = ( function(board) {
             winningPlayer = player2;
         }
 
-        return winningPlayer;
+        return winningPlayer
     }
 
     const _gameOver = function(winningPlayer) {
