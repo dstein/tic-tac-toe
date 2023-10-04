@@ -3,6 +3,9 @@
  * - Refactor win conditions - checkGameOver method
  * - Better ui for players
  * - Add a simple AI for players to compete against
+ * 
+ * BUGS
+ * - Winning on final square results in tie
  */
 
 const Player = function(name, marker) {
@@ -47,7 +50,7 @@ const Gameboard = ( function() {
 
     const domBoard          = document.getElementById('gameboard');
     const boardQuadrants    = document.querySelectorAll('.quadrant');
-    const gameBoard         = [null, null, null, null, null, null, null, null, null];
+    const gameBoard         = ["", "", "", "", "", "", "", "", ""];
     
     //Visualized
     // const gameBoard =   [
@@ -55,8 +58,6 @@ const Gameboard = ( function() {
     //                         {3}'o', {4}'x', {5}'x', 
     //                         {6}'o', {7}'x', {8}'o'
     //                     ];
-
-    //console.log(boardQuadrants);
 
     const _initQuadrantAtts = function(quadrants, board) {
 
@@ -167,7 +168,7 @@ const Controller = ( function(board) {
         }
     }
 
-    const _processGameOver = function(quadrants = []) {
+    const _processGameOver = function( quadrants = [], condition ) {
 
         if ( quadrants.length ===  0 ) {
             return false;
@@ -179,38 +180,30 @@ const Controller = ( function(board) {
         let winningMarker;
         let winningPlayer;
 
-        // gameOverX = quadrants.every( (val) => {
-        //     return val === 'x';
-        // });
+        if ( condition === 'tie' ) {
+            gameOverTie = quadrants.every( (el) => {
+                return el === "x" || el === "o";
+            });
+        }
 
-        // gameOverO = quadrants.every( (val) => {
-        //     return val === 'o';
-        // });
-
-        gameOverTie = quadrants.every( (e) => {
-            return e === 'x' || e === 'o';
-            console.log(e);
+        gameOverX = quadrants.every( (val) => {
+            return val === 'x';
         });
 
-        // function checkQuad(q) {
-        //     console.log(q);
-        //     return q === 'x' && q === 'o';
-        // }
-
-        // for ( let q in quadrants ) {
-        //     console.log(quadrants[q]);
-        // }
-
-        console.log(`Is tie?: ${gameOverTie}`);
+        gameOverO = quadrants.every( (val) => {
+            return val === 'o';
+        });
 
         if ( gameOverX ) {
             winningMarker = 'x';
         } else if ( gameOverO ) {
             winningMarker = 'o';
         } else if ( gameOverTie ) {
-            //winningMarker = 'Tie!';
-            //winningPlayer = winningMarker;
+            winningMarker = 'Tie!';
+            winningPlayer = winningMarker;
         }
+
+        console.log(winningMarker);
 
         if ( player1.marker === winningMarker ) {
             winningPlayer = player1;
@@ -252,41 +245,93 @@ const Controller = ( function(board) {
             console.log('CONTROLLER: CHECKING GAME OVER');
             console.log(state);
 
-            checkTie = _processGameOver( state );
+            checkTie = _processGameOver( state, 'tie' );
 
             if ( checkTie ) {
                 winner = checkTie;
                 console.log('Tie Game!!');
-            }
-            //console.log(`Is tie? ${checkTie}`);
 
-            if ( state[0] && state[4] && state[8] ) {
-                winner = _processGameOver( [ state[0], state[4], state[8] ] );
+            } else {
 
-                if ( winner ) {
-                    winCondition = 'Game over: diagonal, top left to bottom right';
-                    console.log(winCondition);
+                //horizontal
+                if ( state[0] && state[1] && state[2] ) {
+                    winner = _processGameOver( [ state[0], state[1], state[2] ] );
+
+                    if ( winner ) {
+                        winCondition = 'Game over: horizontal, top left to top right';
+                        console.log(winCondition);
+                    }
                 }
-            }
 
-            if ( state[2] && state[4] && state[6] ) {
-                winner = _processGameOver( [ state[2], state[4], state[6] ] );
+                if ( state[3] && state[4] && state[5] ) {
+                    winner = _processGameOver( [ state[3], state[4], state[5] ] );
 
-                if ( winner ) {
-                    winCondition = 'Game over: diagonal, top right to bottom left';
-                    console.log(winCondition);
+                    if ( winner ) {
+                        winCondition = 'Game over: horizontal, mid left to mid right';
+                        console.log(winCondition);
+                    }
+                }
+
+                if ( state[6] && state[7] && state[8] ) {
+                    winner = _processGameOver( [ state[6], state[7], state[8] ] );
+
+                    if ( winner ) {
+                        winCondition = 'Game over: horizontal, bottom left to bottom right';
+                        console.log(winCondition);
+                    }
+                }
+
+                //vertical
+                if ( state[0] && state[3] && state[6] ) {
+                    winner = _processGameOver( [ state[0], state[3], state[6] ] );
+
+                    if ( winner ) {
+                        winCondition = 'Game over: vertical, top left to bottom left';
+                        console.log(winCondition);
+                    }
+                }
+
+                if ( state[1] && state[4] && state[7] ) {
+                    winner = _processGameOver( [ state[1], state[4], state[7] ] );
+
+                    if ( winner ) {
+                        winCondition = 'Game over: vertical, mid top to mid bottom';
+                        console.log(winCondition);
+                    }
+                }
+
+                if ( state[2] && state[5] && state[8] ) {
+                    winner = _processGameOver( [ state[2], state[5], state[8] ] );
+
+                    if ( winner ) {
+                        winCondition = 'Game over: vertical, top right to bottom right';
+                        console.log(winCondition);
+                    }
+                }
+
+                //diagonal
+                if ( state[0] && state[4] && state[8] ) {
+                    winner = _processGameOver( [ state[0], state[4], state[8] ] );
+    
+                    if ( winner ) {
+                        winCondition = 'Game over: diagonal, top left to bottom right';
+                        console.log(winCondition);
+                    }
+                }
+    
+                if ( state[2] && state[4] && state[6] ) {
+                    winner = _processGameOver( [ state[2], state[4], state[6] ] );
+    
+                    if ( winner ) {
+                        winCondition = 'Game over: diagonal, top right to bottom left';
+                        console.log(winCondition);
+                    }
                 }
             }
 
             if ( winner ) {
                 _gameOver(winner);
-            }
-
-            // if ( state[0] ) {
-            //     console.log('index filled');
-            // } else {
-            //     console.log('empty index');
-            // }
+            }    
 
         } else {
             console.log('Please enter a game state array');
