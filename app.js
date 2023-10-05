@@ -203,7 +203,7 @@ const Controller = ( function(board) {
             winningPlayer = winningMarker;
         }
 
-        console.log(winningMarker);
+        console.log(`winning mark ${winningMarker}`);
 
         if ( player1.marker === winningMarker ) {
             winningPlayer = player1;
@@ -245,89 +245,155 @@ const Controller = ( function(board) {
             console.log('CONTROLLER: CHECKING GAME OVER');
             console.log(state);
 
-            checkTie = _processGameOver( state, 'tie' );
+            // checkTie = _processGameOver( state, 'tie' );
 
-            if ( checkTie ) {
-                winner = checkTie;
-                console.log('Tie Game!!');
+            // if ( checkTie ) {
+            //     winner = checkTie;
+            //     console.log('Tie Game!!');
 
-            } else {
+            // } else {
 
-                //horizontal
-                if ( state[0] && state[1] && state[2] ) {
-                    winner = _processGameOver( [ state[0], state[1], state[2] ] );
+            //     //horizontal
+            //     if ( state[0] && state[1] && state[2] ) {
+            //         winner = _processGameOver( [ state[0], state[1], state[2] ] );
 
-                    if ( winner ) {
-                        winCondition = 'Game over: horizontal, top left to top right';
-                        console.log(winCondition);
-                    }
-                }
+            //         if ( winner ) {
+            //             winCondition = 'Game over: horizontal, top left to top right';
+            //             console.log(winCondition);
+            //         }
+            //     }
 
-                if ( state[3] && state[4] && state[5] ) {
-                    winner = _processGameOver( [ state[3], state[4], state[5] ] );
+            //     if ( state[3] && state[4] && state[5] ) {
+            //         winner = _processGameOver( [ state[3], state[4], state[5] ] );
 
-                    if ( winner ) {
-                        winCondition = 'Game over: horizontal, mid left to mid right';
-                        console.log(winCondition);
-                    }
-                }
+            //         if ( winner ) {
+            //             winCondition = 'Game over: horizontal, mid left to mid right';
+            //             console.log(winCondition);
+            //         }
+            //     }
 
-                if ( state[6] && state[7] && state[8] ) {
-                    winner = _processGameOver( [ state[6], state[7], state[8] ] );
+            //     if ( state[6] && state[7] && state[8] ) {
+            //         winner = _processGameOver( [ state[6], state[7], state[8] ] );
 
-                    if ( winner ) {
-                        winCondition = 'Game over: horizontal, bottom left to bottom right';
-                        console.log(winCondition);
-                    }
-                }
+            //         if ( winner ) {
+            //             winCondition = 'Game over: horizontal, bottom left to bottom right';
+            //             console.log(winCondition);
+            //         }
+            //     }
 
-                //vertical
-                if ( state[0] && state[3] && state[6] ) {
-                    winner = _processGameOver( [ state[0], state[3], state[6] ] );
+            //     //vertical
+            //     if ( state[0] && state[3] && state[6] ) {
+            //         winner = _processGameOver( [ state[0], state[3], state[6] ] );
 
-                    if ( winner ) {
-                        winCondition = 'Game over: vertical, top left to bottom left';
-                        console.log(winCondition);
-                    }
-                }
+            //         if ( winner ) {
+            //             winCondition = 'Game over: vertical, top left to bottom left';
+            //             console.log(winCondition);
+            //         }
+            //     }
 
-                if ( state[1] && state[4] && state[7] ) {
-                    winner = _processGameOver( [ state[1], state[4], state[7] ] );
+            //     if ( state[1] && state[4] && state[7] ) {
+            //         winner = _processGameOver( [ state[1], state[4], state[7] ] );
 
-                    if ( winner ) {
-                        winCondition = 'Game over: vertical, mid top to mid bottom';
-                        console.log(winCondition);
-                    }
-                }
+            //         if ( winner ) {
+            //             winCondition = 'Game over: vertical, mid top to mid bottom';
+            //             console.log(winCondition);
+            //         }
+            //     }
 
-                if ( state[2] && state[5] && state[8] ) {
-                    winner = _processGameOver( [ state[2], state[5], state[8] ] );
+            //     if ( state[2] && state[5] && state[8] ) {
+            //         winner = _processGameOver( [ state[2], state[5], state[8] ] );
 
-                    if ( winner ) {
-                        winCondition = 'Game over: vertical, top right to bottom right';
-                        console.log(winCondition);
-                    }
-                }
+            //         if ( winner ) {
+            //             winCondition = 'Game over: vertical, top right to bottom right';
+            //             console.log(winCondition);
+            //         }
+            //     }
 
-                //diagonal
-                if ( state[0] && state[4] && state[8] ) {
-                    winner = _processGameOver( [ state[0], state[4], state[8] ] );
+            //     //diagonal
+            //     if ( state[0] && state[4] && state[8] ) {
+            //         winner = _processGameOver( [ state[0], state[4], state[8] ] );
     
-                    if ( winner ) {
-                        winCondition = 'Game over: diagonal, top left to bottom right';
-                        console.log(winCondition);
-                    }
-                }
+            //         if ( winner ) {
+            //             winCondition = 'Game over: diagonal, top left to bottom right';
+            //             console.log(winCondition);
+            //         }
+            //     }
     
-                if ( state[2] && state[4] && state[6] ) {
-                    winner = _processGameOver( [ state[2], state[4], state[6] ] );
+            //     if ( state[2] && state[4] && state[6] ) {
+            //         winner = _processGameOver( [ state[2], state[4], state[6] ] );
     
-                    if ( winner ) {
-                        winCondition = 'Game over: diagonal, top right to bottom left';
-                        console.log(winCondition);
+            //         if ( winner ) {
+            //             winCondition = 'Game over: diagonal, top right to bottom left';
+            //             console.log(winCondition);
+            //         }
+            //     }
+            // }
+
+            // stateWinX = [ "x", "o", "x", "x", "o", "o", "x", "x", "o" ];
+            // stateWinO = [ "o", "x", "x", "x", "o", "x", "x", "o", "o" ]
+            // stateTie = [ "x", "o", "x", "x", "o", "o", "o", "x", "x" ];
+            // state = stateTie;
+            const winStateX = [ "x", "x", "x" ];
+            const winStateO = [ "o", "o", "o" ];
+            let winMarker = "";
+
+            let winQuadHorizTop     = [ state[0], state[1], state[2] ];
+            let winQuadHorizMid     = [ state[3], state[4], state[5] ];
+            let winQuadHorizBtm     = [ state[6], state[7], state[8] ];
+
+            //winner
+            let winQuadVertLeft     = [ state[0], state[3], state[6] ];
+
+            let winQuadVertMid      = [ state[1], state[4], state[7] ];
+            let winQuadVertRight    = [ state[2], state[5], state[8] ];
+
+            let winQuadDiagLeft     = [ state[0], state[4], state[8] ];
+            let winQuadDiagRight    = [ state[2], state[4], state[6] ];
+
+            const winMaster = [ winQuadHorizTop, winQuadHorizMid, winQuadHorizBtm, 
+                winQuadVertLeft, winQuadVertMid, winQuadVertRight, winQuadDiagLeft, winQuadDiagRight ];
+
+            const winParse = winMaster.filter( (val) => {
+                console.log(val);
+    
+                let winX = val.every( (e, i) => {
+
+                    if ( e === winStateX[i] ) {
+                        return true;
                     }
+                });
+
+                let winO = val.every( (e, i) => {
+
+                    if ( e === winStateO[i] ) {
+                        return true;
+                    }
+                });
+
+                if ( winX || winO ) {
+                    return val;
                 }
+            });
+
+            console.log(winParse);
+            console.log(winMaster);
+
+            if ( winParse.length === 1 ) {
+                winMarker = winParse[0][0];
+
+                if ( player1.marker === winMarker ) {
+                    winner = player1;
+                } else if ( player2.marker === winMarker ) {
+                    winner = player2;
+                }
+
+            } else if ( winParse.length === 0 && state.every( (e) => e === 'o' || e === 'x' ) ) {
+                console.log('we have a tie!');
             }
+
+            // if ( winParse.length === 0 && state.every( (e) => e === 'o' || e === 'x' ) ) {
+            //     console.log('we have a tie!');
+            // }
 
             if ( winner ) {
                 _gameOver(winner);
