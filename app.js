@@ -1,11 +1,8 @@
 /**
  * TODO
- * - Refactor win conditions - checkGameOver method
  * - Better ui for players
  * - Add a simple AI for players to compete against
  * 
- * BUGS
- * - Winning on final square results in tie
  */
 
 const Player = function(name, marker) {
@@ -130,6 +127,23 @@ const Controller = ( function(board) {
     let player2         = {};
     let currPlayer      = {};
 
+    const winQuadHorizTop     = { winPosition: [], winCondition: 'Horizontal: top', winIndex: "", winMarker: "" };
+    const winQuadHorizMid     = { winPosition: [], winCondition: 'Horizontal: mid', winIndex: "", winMarker: "" };
+    const winQuadHorizBtm     = { winPosition: [], winCondition: 'Horizontal: btm', winIndex: "", winMarker: "" };
+
+    const winQuadVertLeft     = { winPosition: [], winCondition: 'Vertical: left', winIndex: "", winMarker: "" };
+    const winQuadVertMid      = { winPosition: [], winCondition: 'Vertical: mid', winIndex: "", winMarker: "" };
+    const winQuadVertRight    = { winPosition: [], winCondition: 'Vertical: right', winIndex: "", winMarker: "" };
+
+    const winQuadDiagLeft     = { winPosition: [], winCondition: 'Diagonal: left', winIndex: "", winMarker: "" };
+    const winQuadDiagRight    = { winPosition: [], winCondition: 'Diagonal: right', winIndex: "", winMarker: "" };
+
+    const winMaster = [ winQuadHorizTop, winQuadHorizMid, winQuadHorizBtm, 
+        winQuadVertLeft, winQuadVertMid, winQuadVertRight, winQuadDiagLeft, winQuadDiagRight ];
+
+    const winStateX = [ "x", "x", "x" ];
+    const winStateO = [ "o", "o", "o" ];
+
     const _mapBoardQuadrants = function(quadrants) {
 
         for ( let quad of quadrants ) {
@@ -140,7 +154,6 @@ const Controller = ( function(board) {
                 if ( ! isGameOver ) {
                     _updateBoard(currQuad, currPlayer);
                 }
-                
             });
         }
     }
@@ -166,11 +179,18 @@ const Controller = ( function(board) {
         }
     }
 
-    const _gameOver = function( winningPlayer, condition ) {
+    const _gameOver = function( winningPlayer ) {
         isGameOver = true;
+
+        for ( let winReset of winMaster ) {
+            winReset.winPosition = [];
+            winReset.winMarker = "";
+            winReset.winIndex = "";
+        }
 
         console.log('Game Over man!');
         console.log(winningPlayer);
+        console.log(winMaster);
     }
 
     const _init = function() {
@@ -189,52 +209,49 @@ const Controller = ( function(board) {
     const checkGameOver = function(state = []) {
 
         let winner;
-        let winCondition;
+        let playerWinMarker;
 
         if ( state.length !== 0 ) {
             
             console.log('CONTROLLER: CHECKING GAME OVER');
             console.log(state);
 
-            stateWinX = [ "x", "o", "x", "x", "o", "o", "x", "x", "o" ];
-            // stateWinO = [ "o", "x", "x", "x", "o", "x", "x", "o", "o" ]
-            // stateTie = [ "x", "o", "x", "x", "o", "o", "o", "x", "x" ];
-            state = stateWinX;
+            //TESTING CONDITIONS
+            //stateWinX = [ "x", "o", "x", "x", "o", "o", "x", "x", "o" ];
+            //stateWinO = [ "o", "x", "x", "x", "o", "x", "x", "o", "o" ]
+            //stateTie = [ "x", "o", "x", "x", "o", "o", "o", "x", "x" ];
+            //state = stateWinX;
 
-            const winQuadHorizTop     = [ state[0], state[1], state[2] ];
-            const winQuadHorizMid     = [ state[3], state[4], state[5] ];
-            const winQuadHorizBtm     = [ state[6], state[7], state[8] ];
+            winQuadHorizTop.winPosition = [ state[0], state[1], state[2] ];
+            winQuadHorizMid.winPosition = [ state[3], state[4], state[5] ];
+            winQuadHorizBtm.winPosition = [ state[6], state[7], state[8] ];
 
-            const winQuadVertLeft     = [ state[0], state[3], state[6] ];
-            const winQuadVertMid      = [ state[1], state[4], state[7] ];
-            const winQuadVertRight    = [ state[2], state[5], state[8] ];
+            winQuadVertLeft.winPosition = [ state[0], state[3], state[6] ];
+            winQuadVertMid.winPosition  = [ state[1], state[4], state[7] ];
+            winQuadVertRight.winPosition = [ state[2], state[5], state[8] ];
 
-            const winQuadDiagLeft     = [ state[0], state[4], state[8] ];
-            const winQuadDiagRight    = [ state[2], state[4], state[6] ];
+            winQuadDiagLeft.winPosition = [ state[0], state[4], state[8] ];
+            winQuadDiagRight.winPosition = [ state[2], state[4], state[6] ];
 
-            const winMaster = [ winQuadHorizTop, winQuadHorizMid, winQuadHorizBtm, 
-                winQuadVertLeft, winQuadVertMid, winQuadVertRight, winQuadDiagLeft, winQuadDiagRight ];
-
-            const winStateX = [ "x", "x", "x" ];
-            const winStateO = [ "o", "o", "o" ];
-            let winMarker = "";
-
-            const winParse = winMaster.filter( (val, index, rep) => {
+            const winParse = winMaster.filter( (val, index) => {
 
                 console.log(val);
                 console.log(index);
 
-                let winX = val.every( (e, i) => {
+                val.winIndex = index;
+
+                let winX = val.winPosition.every( (e, i) => {
 
                     if ( e === winStateX[i] ) {
+                        val.winMarker = 'x';
                         return true;
                     }
                 });
 
-                let winO = val.every( (e, i) => {
+                let winO = val.winPosition.every( (e, i) => {
 
                     if ( e === winStateO[i] ) {
-                        winIndex = i;
+                        val.winMarker = 'o';
                         return true;
                     }
                 });
@@ -248,22 +265,24 @@ const Controller = ( function(board) {
             console.log(winMaster);
 
             if ( winParse.length === 1 ) {
-                winMarker = winParse[0][0];
+                playerWinMarker = winParse[0].winMarker;
 
-                if ( player1.marker === winMarker ) {
+                if ( player1.marker === playerWinMarker ) {
                     winner = player1;
-                } else if ( player2.marker === winMarker ) {
+                } else if ( player2.marker === playerWinMarker ) {
                     winner = player2;
                 }
+
+                winner.winCondition = winParse[0].winCondition;
 
             } else if ( winParse.length === 0 && state.every( (e) => e === 'o' || e === 'x' ) ) {
                 console.log('we have a tie!');
                 winner = {};
-                winCondition = 'tie';
+                winner.winCondition = 'tie';
             }
 
             if ( winner ) {
-                _gameOver(winner, winCondition);
+                _gameOver(winner);
             }    
 
         } else {
