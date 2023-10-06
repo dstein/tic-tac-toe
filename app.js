@@ -157,8 +157,6 @@ const Controller = ( function(board) {
         if ( markerAdded ) {
             playerChangeTurn(currPlayer);
 
-            //TESTING
-            //TODO: replace gameState value with prod game board array
             gameState.splice( quadrant.getAttribute('data-index'), 1, player.marker );
 
             checkGameOver(gameState);
@@ -168,53 +166,7 @@ const Controller = ( function(board) {
         }
     }
 
-    const _processGameOver = function( quadrants = [], condition ) {
-
-        if ( quadrants.length ===  0 ) {
-            return false;
-        }
-
-        let gameOverX;
-        let gameOverO;
-        let gameOverTie;
-        let winningMarker;
-        let winningPlayer;
-
-        if ( condition === 'tie' ) {
-            gameOverTie = quadrants.every( (el) => {
-                return el === "x" || el === "o";
-            });
-        }
-
-        gameOverX = quadrants.every( (val) => {
-            return val === 'x';
-        });
-
-        gameOverO = quadrants.every( (val) => {
-            return val === 'o';
-        });
-
-        if ( gameOverX ) {
-            winningMarker = 'x';
-        } else if ( gameOverO ) {
-            winningMarker = 'o';
-        } else if ( gameOverTie ) {
-            winningMarker = 'Tie!';
-            winningPlayer = winningMarker;
-        }
-
-        console.log(`winning mark ${winningMarker}`);
-
-        if ( player1.marker === winningMarker ) {
-            winningPlayer = player1;
-        } else if ( player2.marker === winningMarker ) {
-            winningPlayer = player2;
-        }
-
-        return winningPlayer
-    }
-
-    const _gameOver = function(winningPlayer) {
+    const _gameOver = function( winningPlayer, condition ) {
         isGameOver = true;
 
         console.log('Game Over man!');
@@ -237,7 +189,6 @@ const Controller = ( function(board) {
     const checkGameOver = function(state = []) {
 
         let winner;
-        let checkTie;
         let winCondition;
 
         if ( state.length !== 0 ) {
@@ -245,117 +196,34 @@ const Controller = ( function(board) {
             console.log('CONTROLLER: CHECKING GAME OVER');
             console.log(state);
 
-            // checkTie = _processGameOver( state, 'tie' );
-
-            // if ( checkTie ) {
-            //     winner = checkTie;
-            //     console.log('Tie Game!!');
-
-            // } else {
-
-            //     //horizontal
-            //     if ( state[0] && state[1] && state[2] ) {
-            //         winner = _processGameOver( [ state[0], state[1], state[2] ] );
-
-            //         if ( winner ) {
-            //             winCondition = 'Game over: horizontal, top left to top right';
-            //             console.log(winCondition);
-            //         }
-            //     }
-
-            //     if ( state[3] && state[4] && state[5] ) {
-            //         winner = _processGameOver( [ state[3], state[4], state[5] ] );
-
-            //         if ( winner ) {
-            //             winCondition = 'Game over: horizontal, mid left to mid right';
-            //             console.log(winCondition);
-            //         }
-            //     }
-
-            //     if ( state[6] && state[7] && state[8] ) {
-            //         winner = _processGameOver( [ state[6], state[7], state[8] ] );
-
-            //         if ( winner ) {
-            //             winCondition = 'Game over: horizontal, bottom left to bottom right';
-            //             console.log(winCondition);
-            //         }
-            //     }
-
-            //     //vertical
-            //     if ( state[0] && state[3] && state[6] ) {
-            //         winner = _processGameOver( [ state[0], state[3], state[6] ] );
-
-            //         if ( winner ) {
-            //             winCondition = 'Game over: vertical, top left to bottom left';
-            //             console.log(winCondition);
-            //         }
-            //     }
-
-            //     if ( state[1] && state[4] && state[7] ) {
-            //         winner = _processGameOver( [ state[1], state[4], state[7] ] );
-
-            //         if ( winner ) {
-            //             winCondition = 'Game over: vertical, mid top to mid bottom';
-            //             console.log(winCondition);
-            //         }
-            //     }
-
-            //     if ( state[2] && state[5] && state[8] ) {
-            //         winner = _processGameOver( [ state[2], state[5], state[8] ] );
-
-            //         if ( winner ) {
-            //             winCondition = 'Game over: vertical, top right to bottom right';
-            //             console.log(winCondition);
-            //         }
-            //     }
-
-            //     //diagonal
-            //     if ( state[0] && state[4] && state[8] ) {
-            //         winner = _processGameOver( [ state[0], state[4], state[8] ] );
-    
-            //         if ( winner ) {
-            //             winCondition = 'Game over: diagonal, top left to bottom right';
-            //             console.log(winCondition);
-            //         }
-            //     }
-    
-            //     if ( state[2] && state[4] && state[6] ) {
-            //         winner = _processGameOver( [ state[2], state[4], state[6] ] );
-    
-            //         if ( winner ) {
-            //             winCondition = 'Game over: diagonal, top right to bottom left';
-            //             console.log(winCondition);
-            //         }
-            //     }
-            // }
-
-            // stateWinX = [ "x", "o", "x", "x", "o", "o", "x", "x", "o" ];
+            stateWinX = [ "x", "o", "x", "x", "o", "o", "x", "x", "o" ];
             // stateWinO = [ "o", "x", "x", "x", "o", "x", "x", "o", "o" ]
             // stateTie = [ "x", "o", "x", "x", "o", "o", "o", "x", "x" ];
-            // state = stateTie;
-            const winStateX = [ "x", "x", "x" ];
-            const winStateO = [ "o", "o", "o" ];
-            let winMarker = "";
+            state = stateWinX;
 
-            let winQuadHorizTop     = [ state[0], state[1], state[2] ];
-            let winQuadHorizMid     = [ state[3], state[4], state[5] ];
-            let winQuadHorizBtm     = [ state[6], state[7], state[8] ];
+            const winQuadHorizTop     = [ state[0], state[1], state[2] ];
+            const winQuadHorizMid     = [ state[3], state[4], state[5] ];
+            const winQuadHorizBtm     = [ state[6], state[7], state[8] ];
 
-            //winner
-            let winQuadVertLeft     = [ state[0], state[3], state[6] ];
+            const winQuadVertLeft     = [ state[0], state[3], state[6] ];
+            const winQuadVertMid      = [ state[1], state[4], state[7] ];
+            const winQuadVertRight    = [ state[2], state[5], state[8] ];
 
-            let winQuadVertMid      = [ state[1], state[4], state[7] ];
-            let winQuadVertRight    = [ state[2], state[5], state[8] ];
-
-            let winQuadDiagLeft     = [ state[0], state[4], state[8] ];
-            let winQuadDiagRight    = [ state[2], state[4], state[6] ];
+            const winQuadDiagLeft     = [ state[0], state[4], state[8] ];
+            const winQuadDiagRight    = [ state[2], state[4], state[6] ];
 
             const winMaster = [ winQuadHorizTop, winQuadHorizMid, winQuadHorizBtm, 
                 winQuadVertLeft, winQuadVertMid, winQuadVertRight, winQuadDiagLeft, winQuadDiagRight ];
 
-            const winParse = winMaster.filter( (val) => {
+            const winStateX = [ "x", "x", "x" ];
+            const winStateO = [ "o", "o", "o" ];
+            let winMarker = "";
+
+            const winParse = winMaster.filter( (val, index, rep) => {
+
                 console.log(val);
-    
+                console.log(index);
+
                 let winX = val.every( (e, i) => {
 
                     if ( e === winStateX[i] ) {
@@ -366,6 +234,7 @@ const Controller = ( function(board) {
                 let winO = val.every( (e, i) => {
 
                     if ( e === winStateO[i] ) {
+                        winIndex = i;
                         return true;
                     }
                 });
@@ -389,14 +258,12 @@ const Controller = ( function(board) {
 
             } else if ( winParse.length === 0 && state.every( (e) => e === 'o' || e === 'x' ) ) {
                 console.log('we have a tie!');
+                winner = {};
+                winCondition = 'tie';
             }
 
-            // if ( winParse.length === 0 && state.every( (e) => e === 'o' || e === 'x' ) ) {
-            //     console.log('we have a tie!');
-            // }
-
             if ( winner ) {
-                _gameOver(winner);
+                _gameOver(winner, winCondition);
             }    
 
         } else {
