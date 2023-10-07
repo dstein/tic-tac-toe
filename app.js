@@ -76,8 +76,6 @@ const Gameboard = ( function() {
     };
 
     const _checkQuadrant = function(quadrant) {
-        //console.log("CHECKING!!!");
-        //console.log(quadrant);
 
         if ( ! quadrant.getAttribute('data-marker') ) {
             return true;
@@ -91,13 +89,7 @@ const Gameboard = ( function() {
     }
 
     const addMarker = function(quadrant, player = {}) {
-
         const canAddMarker = _checkQuadrant(quadrant);
-        //console.log(canAddMarker);
-        // console.log('GAMEBOARD - Adding Marker');
-
-        console.log(quadrant);
-        // console.log(player);
 
         if ( canAddMarker ) {
             quadrant.setAttribute('data-marker', player.marker);
@@ -109,6 +101,7 @@ const Gameboard = ( function() {
     }
 
     return {
+        domBoard,
         gameBoard,
         boardQuadrants,
         boardSetup: boardSetup,
@@ -120,6 +113,9 @@ const Controller = ( function(board) {
 
     const startBtn      = document.getElementById('start');
     const restartBtn    = document.getElementById('restart');
+    const msgUI         = document.getElementById('message-ui');
+    const pTurnUI       = document.getElementById('player-ui');
+    const boardEl       = board.domBoard;
     let gameState       = board.gameBoard;
     let isGameOver      = false;
     let opMarker        = '';
@@ -160,12 +156,10 @@ const Controller = ( function(board) {
 
     const _updateBoard = function(quadrant, player) {
         
-        console.log(`CONTROLLER: My player: ${player.name} - My marker: ${player.marker}`);
+        //console.log(`CONTROLLER: My player: ${player.name} - My marker: ${player.marker}`);
 
         //Add marker to board and change turn
         const markerAdded = board.addMarker(quadrant, player);
-
-        //console.log(`CONTROLLER: _updateBoard() - Has the marker been added? ${markerAdded}`);
 
         if ( markerAdded ) {
             playerChangeTurn(currPlayer);
@@ -188,12 +182,14 @@ const Controller = ( function(board) {
             winReset.winIndex = "";
         }
 
-        console.log('Game Over man!');
-        console.log(winningPlayer);
-        console.log(winMaster);
+        msgUI.innerHTML = `${winningPlayer.name} wins! 
+                        ${winningPlayer.winCondition} <br> <strong>Game Over!</strong>`;
+
+        pTurnUI.innerHTML = "";
     }
 
     const _init = function() {
+        boardEl.style.display = 'block';
         _mapBoardQuadrants(board.boardQuadrants);
     }
 
@@ -204,6 +200,8 @@ const Controller = ( function(board) {
         } else {
             currPlayer = player1;
         }
+
+        pTurnUI.innerHTML = `${currPlayer.name}'s turn!`;
     }
 
     const checkGameOver = function(state = []) {
@@ -294,27 +292,34 @@ const Controller = ( function(board) {
         isGameOver          = false;
         board.gameBoard     = ['', '', '', '', '', '', '', '', '' ];
         gameState           = board.gameBoard;
+        msgUI.innerHTML     = "";
         startGame();
     }
 
     const startGame = function() {
 
-        //PLAYER SETUP
-        //player1 = Player();
-        player1 = Player('p1', 'x');
+        if ( Object.keys(player1).length === 0 && Object.keys(player2).length === 0 ) {
 
-        if ( player1.marker === 'x' ) {
-            opMarker = 'o';
-        } else if ( player1.marker === 'o' ) {
-            opMarker = 'x';
+            //PLAYER SETUP
+            player1 = Player();
+            //player1 = Player('p1', 'x');
+
+            if ( player1.marker === 'x' ) {
+                opMarker = 'o';
+            } else if ( player1.marker === 'o' ) {
+                opMarker = 'x';
+            }
+
+            player2 = Player('', opMarker);
+            //player2 = Player('p2', 'o');
         }
-
-        //player2 = Player('', opMarker);
-        player2 = Player('p2', 'o');
 
         //GAME SETUP
         currPlayer = player1;
         board.boardSetup(currPlayer);
+
+        pTurnUI.style.display = 'block';
+        pTurnUI.innerHTML = `${currPlayer.name}'s turn!`;
     }
 
     startBtn.addEventListener( 'click', (e) => {
