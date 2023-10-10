@@ -211,14 +211,8 @@ const Controller = ( function(board) {
 
         if ( state.length !== 0 ) {
             
-            console.log('CONTROLLER: CHECKING GAME OVER');
-            console.log(state);
-
-            //TESTING CONDITIONS
-            //stateWinX = [ "x", "o", "x", "x", "o", "o", "x", "x", "o" ];
-            //stateWinO = [ "o", "x", "x", "x", "o", "x", "x", "o", "o" ]
-            //stateTie = [ "x", "o", "x", "x", "o", "o", "o", "x", "x" ];
-            //state = stateWinX;
+            // console.log('CONTROLLER: CHECKING GAME OVER');
+            // console.log(state);
 
             winQuadHorizTop.winPosition = [ state[0], state[1], state[2] ];
             winQuadHorizMid.winPosition = [ state[3], state[4], state[5] ];
@@ -335,7 +329,6 @@ const Controller = ( function(board) {
     restartBtn.addEventListener( 'click', restartGame);
 
     return {
-        playerChangeTurn: playerChangeTurn,
         checkGameOver: checkGameOver
     }
 
